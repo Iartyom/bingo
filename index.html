@@ -6,7 +6,7 @@
 <title>בינגו היכרות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Heebo:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@500;600;700&family=Heebo:wght@400;500;600;700;800;900&display=swap">
 <style>
   /* ============================================================
      בינגו היכרות — Team Bingo Mixer (Hebrew / RTL)
@@ -18,19 +18,22 @@
      ============================================================ */
 
   :root {
-    /* picked neutrals: soft pastel-green ground with a sage bias */
-    --bg:        #eaf5ea;
+    /* army "field" palette — light khaki ground, olive drab, medal gold */
+    --bg:        #e7ecda;   /* light khaki */
     --surface:   #ffffff;
-    --surface-2: #f1faf1;
-    --ink:       #22342a;
-    --ink-soft:  #5e7367;
-    --line:      #d3e8d3;
-    --accent:    #7ccaa3;   /* pastel green */
-    --accent-ink:#0f3826;   /* deep green text on pastel accent */
-    --teal:      #3fa87a;   /* secondary / "filled" */
-    --gold:      #e7c15a;   /* free space + win contrast */
-    --shadow:    0 1px 2px rgba(34,52,42,.06), 0 8px 24px rgba(34,52,42,.09);
-    --radius:    16px;
+    --surface-2: #f2f4e8;
+    --ink:       #242c18;   /* dark olive */
+    --ink-soft:  #646b4e;
+    --line:      #d3d9be;
+    --accent:    #6f8f4a;   /* olive drab */
+    --accent-ink:#ffffff;
+    --teal:      #4f7a3f;   /* field green — "filled" */
+    --gold:      #c79a2e;   /* medal gold — free + win */
+    --camo1:     rgba(111,143,74,.10);
+    --camo2:     rgba(90,105,60,.09);
+    --camo3:     rgba(160,150,110,.10);
+    --shadow:    0 1px 2px rgba(36,44,24,.07), 0 8px 22px rgba(36,44,24,.10);
+    --radius:    14px;
   }
   /* Single fixed light theme — the pastel-green look stays the same for every
      viewer regardless of their OS/browser theme (no dark overrides). */
@@ -38,7 +41,15 @@
 
   * { box-sizing: border-box; }
   body {
-    background: var(--bg);
+    /* soft camo texture: a few large low-contrast olive blobs over khaki */
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(38% 30% at 12% 18%, var(--camo1) 0 60%, transparent 62%),
+      radial-gradient(30% 26% at 82% 12%, var(--camo3) 0 60%, transparent 62%),
+      radial-gradient(34% 30% at 68% 60%, var(--camo2) 0 60%, transparent 62%),
+      radial-gradient(28% 24% at 22% 82%, var(--camo3) 0 60%, transparent 62%),
+      radial-gradient(30% 26% at 92% 88%, var(--camo1) 0 60%, transparent 62%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: "Heebo", system-ui, sans-serif;
     line-height: 1.5;
@@ -54,17 +65,32 @@
   /* ---------- header ---------- */
   header { text-align: center; margin-bottom: 20px; }
   .kicker {
-    font-size: 12px; letter-spacing: .12em;
-    color: var(--teal); font-weight: 800; margin: 0 0 6px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: .16em;
+    color: var(--accent-ink); font-weight: 800; margin: 0 0 10px;
+    background: var(--teal); padding: 5px 12px; border-radius: 999px;
+    box-shadow: var(--shadow);
   }
+  .kicker .chev { color: var(--gold); font-size: 11px; letter-spacing: -1px; }
   h1 {
-    font-family: "Rubik", sans-serif; font-weight: 700;
-    font-size: clamp(30px, 7vw, 46px); line-height: 1.05;
-    margin: 0; text-wrap: balance;
+    font-family: "Secular One", "Rubik", sans-serif; font-weight: 400;
+    font-size: clamp(34px, 8.5vw, 58px); line-height: .98;
+    margin: 0; text-wrap: balance; letter-spacing: .01em;
     color: var(--ink);
+    text-shadow: 2px 2px 0 color-mix(in srgb, var(--accent) 22%, transparent);
   }
-  h1 .dot { color: var(--teal); }
-  .tagline { color: var(--ink-soft); margin: 8px auto 0; max-width: 48ch; }
+  h1 .dot { color: var(--gold); }
+  /* tactical divider: dashed field line with a center star */
+  .divider {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 12px auto 0; max-width: 320px; color: var(--accent);
+  }
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 0; border-top: 2px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .divider .medal { font-size: 15px; color: var(--gold); }
+  .tagline { color: var(--ink-soft); margin: 12px auto 0; max-width: 48ch; font-weight: 600; }
+  .tagline b { color: var(--teal); }
 
   /* ---------- controls bar ---------- */
   .panel {
@@ -152,7 +178,7 @@
     background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--teal) 70%, var(--accent)));
     border-color: transparent; color: var(--accent-ink);
   }
-  .cell.free .star { font-family: "Rubik", sans-serif; font-weight: 700; font-size: 24px; line-height: 1; }
+  .cell.free .star { font-size: 26px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
   .cell.free .lbl { font-size: 11px; letter-spacing: .08em; font-weight: 800; }
 
   /* letter strip בינגו across the top */
@@ -160,8 +186,9 @@
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 8px;
   }
   .head-strip span {
-    font-family: "Rubik", sans-serif; font-weight: 700; font-size: clamp(22px, 5vw, 32px);
+    font-family: "Secular One", "Rubik", sans-serif; font-size: clamp(24px, 5.4vw, 36px);
     text-align: center; color: var(--teal);
+    text-shadow: 1px 1px 0 color-mix(in srgb, var(--accent) 25%, transparent);
   }
   .head-strip span:nth-child(2){ color: var(--accent); }
   .head-strip span:nth-child(3){ color: var(--gold); }
@@ -170,11 +197,17 @@
 
   /* ---------- win banner ---------- */
   .banner {
-    margin: 18px 0 0; text-align: center;
-    background: var(--surface); border: 2px solid var(--gold);
-    border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px;
+    margin: 18px 0 0; text-align: center; position: relative; overflow: hidden;
+    background: var(--surface); border: 3px solid var(--gold);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 18px;
   }
-  .banner h2 { font-family: "Rubik", sans-serif; margin: 0 0 4px; font-size: 26px; color: var(--teal); }
+  /* hazard stripe running along the top of the mission-complete banner */
+  .banner::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 7px;
+    background: repeating-linear-gradient(45deg, var(--gold) 0 12px, var(--ink) 12px 24px);
+    opacity: .85;
+  }
+  .banner h2 { font-family: "Secular One", "Rubik", sans-serif; margin: 6px 0 4px; font-size: 30px; color: var(--teal); }
   .banner p { margin: 0; color: var(--ink-soft); font-weight: 700; }
 
   .hint { text-align:center; color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
@@ -209,15 +242,16 @@
 
 <div class="wrap">
   <header>
-    <p class="kicker">בינגו היכרות</p>
+    <p class="kicker"><span class="chev">►►</span> בינגו היכרות</p>
     <h1>מדור אקסון<span class="dot">.</span></h1>
-    <p class="tagline">מצאו חבר/ת צוות שמתאים/ה לכל משבצת ורשמו את השם. השלימו <b>שתי שורות מלאות</b> — לרוחב, לאורך או באלכסון — וזה בינגו.</p>
+    <div class="divider" aria-hidden="true"><span class="medal">★</span></div>
+    <p class="tagline">מצאו חבר/ת צוות שמתאים/ה לכל משבצת ורשמו את השם. השלימו <b>שתי שורות מלאות</b> — לרוחב, לאורך או באלכסון — והמשימה הושלמה.</p>
   </header>
 
   <div class="panel">
     <div class="field">
-      <label for="playerName">השם שלך</label>
-      <input id="playerName" type="text" placeholder="הקלד/י את שמך כדי לקבל כרטיס" autocomplete="off" spellcheck="false">
+      <label for="playerName">שם הלוחם/ת</label>
+      <input id="playerName" type="text" placeholder="הקלד/י שם כדי לקבל כרטיס משימה" autocomplete="off" spellcheck="false">
     </div>
     <div class="btns">
       <button id="newCard" title="ערבוב כרטיס חדש">כרטיס חדש</button>
@@ -236,8 +270,8 @@
   <div class="board" id="board" aria-label="לוח בינגו"></div>
 
   <div class="banner" id="banner" hidden>
-    <h2>🎉 בינגו!</h2>
-    <p id="bannerMsg">השלמת שתי שורות. כל הכבוד על העירבוב!</p>
+    <h2>🎖️ המשימה הושלמה — בינגו!</h2>
+    <p id="bannerMsg">השלמת שתי שורות. כל הכבוד, לוחם/ת!</p>
   </div>
 
   <p class="hint">טיפ: הכרטיס נשמר במכשיר הזה ומקושר לשמך — אפשר לרענן בכל רגע.</p>
@@ -338,7 +372,7 @@ function render(){
     const div = document.createElement('div');
     div.className = 'cell' + (cell.free ? ' free' : '');
     if(cell.free){
-      div.innerHTML = '<div class="star">★</div><div class="lbl">חופשי</div>';
+      div.innerHTML = '<div class="star">🎖️</div><div class="lbl">חופשי</div>';
     } else {
       const prompt = document.createElement('div');
       prompt.className = 'prompt';
