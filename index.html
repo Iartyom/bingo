@@ -154,9 +154,13 @@
     box-shadow: var(--shadow);
     transition: border-color .15s ease, background .15s ease;
   }
+  .cell .ico {
+    font-size: 19px; line-height: 1; text-align: center;
+    filter: drop-shadow(0 1px 1px rgba(36,44,24,.18));
+  }
   .cell .prompt {
-    font-size: 12px; line-height: 1.25; font-weight: 700; color: var(--ink);
-    flex: 1; overflow-wrap: anywhere;
+    font-size: 12px; line-height: 1.22; font-weight: 700; color: var(--ink);
+    flex: 1; overflow-wrap: anywhere; text-align: center;
   }
   .cell input {
     width: 100%; font: inherit; font-size: 12px; font-weight: 700;
@@ -217,8 +221,9 @@
   /* ---- mobile: keep the full 5x5 grid on-screen, no sideways scroll ---- */
   @media (max-width: 560px) {
     .wrap { padding: 20px 10px 48px; }
-    .cell { min-height: 84px; padding: 5px 4px; gap: 4px; border-radius: 10px; }
-    .cell .prompt { font-size: clamp(9px, 2.6vw, 11px); line-height: 1.18; }
+    .cell { min-height: 84px; padding: 5px 4px; gap: 3px; border-radius: 10px; }
+    .cell .ico { font-size: 16px; }
+    .cell .prompt { font-size: clamp(9px, 2.6vw, 11px); line-height: 1.16; }
     .cell input { font-size: 11px; padding: 4px 4px; }
     .cell.free .star { font-size: 20px; }
     .cell.free .lbl { font-size: 9px; }
@@ -230,6 +235,7 @@
   @media (max-width: 380px) {
     .wrap { padding: 16px 6px 40px; }
     .cell { min-height: 76px; padding: 4px 3px; }
+    .cell .ico { font-size: 14px; }
     .cell input { font-size: 10px; }
     .board, .head-strip { gap: 3px; }
   }
@@ -283,40 +289,43 @@
 /* ============================================================
    PROMPTS — משבצות ה"מישהו ש...".
    >>> החליפו אותן בנושאים שלך. <<<
+   כל פריט הוא { icon, text }: icon = אימוג'י שמתאים למשבצת,
+   text ממשיך את המשפט "מישהו ש" + הטקסט.
    שמרו 24 ומעלה כדי שהכרטיס יעורבב היטב. המרכז תמיד "חופשי".
-   כל טקסט ממשיך את המשפט: "מישהו ש" + הטקסט.
    ============================================================ */
 const PROMPTS = [
-  "עובד/ת כאן יותר משלוש שנים",
-  "דובר/ת שתי שפות או יותר",
-  "יש לו/ה חיית מחמד בבית",
-  "ביקר/ה ביבשת אחרת",
-  "מנגן/ת בכלי נגינה",
-  "מעדיף/ה תה על פני קפה",
-  "רץ/ה חמישה ק\"מ או יותר",
-  "הבכור/ה במשפחה",
-  "יודע/ת לתכנת ביותר משפת תכנות אחת",
-  "פגש/ה אדם מפורסם",
-  "אוהב/ת אוכל חריף",
-  "גר/ה במדינה אחרת בעבר",
-  "אדם/אשת בוקר",
-  "קפץ/ה בבנג'י או צניחה חופשית",
-  "מגדל/ת צמחים או ירקות",
-  "קרא/ה ספר החודש",
-  "אוהד/ת אותה קבוצת ספורט כמוך",
-  "בעל/ת אותו מזל כמוך",
-  "יודע/ת ללהטט",
-  "יש לו/ה כישרון נסתר",
-  "אוהב/ת אותו ז'אנר סרטים כמוך",
-  "מגיע/ה לעבודה באופניים או ברגל",
-  "יש לו/ה יום הולדת החודש",
-  "משחק/ת משחקי וידאו",
-  "אפה/תה משהו מאפס",
-  "החליף/ה קריירה לפחות פעם אחת",
-  "יודע/ת לסרוג או לתפור",
-  "יש לו/ה קעקוע",
-  "אספן/ית של משהו",
-  "שר/ה בקריוקי בפומבי"
+  { icon:"🎖️", text:"עובד/ת כאן יותר משלוש שנים" },
+  { icon:"💻", text:"יודע/ת לתכנת ביותר משפת תכנות אחת" },
+  { icon:"🐞", text:"מצא/ה באג קריטי בקוד" },
+  { icon:"⌨️", text:"מקליד/ה בלי להסתכל על המקלדת" },
+  { icon:"🖥️", text:"בנה/תה אתר או אפליקציה בעצמו/ה" },
+  { icon:"🛰️", text:"עבד/ה עם ציוד קשר או שו\"ב" },
+  { icon:"🔐", text:"מתעניין/ת בסייבר או אבטחת מידע" },
+  { icon:"🤖", text:"השתמש/ה ב-AI כדי לפתור משימה" },
+  { icon:"🗣️", text:"דובר/ת שתי שפות או יותר" },
+  { icon:"🐕", text:"יש לו/ה חיית מחמד בבית" },
+  { icon:"🌍", text:"ביקר/ה ביבשת אחרת" },
+  { icon:"🎸", text:"מנגן/ת בכלי נגינה" },
+  { icon:"🍵", text:"מעדיף/ה תה על פני קפה" },
+  { icon:"🏃", text:"רץ/ה חמישה ק\"מ או יותר" },
+  { icon:"👑", text:"הבכור/ה במשפחה" },
+  { icon:"⭐", text:"פגש/ה אדם מפורסם" },
+  { icon:"🌶️", text:"אוהב/ת אוכל חריף" },
+  { icon:"✈️", text:"גר/ה במדינה אחרת בעבר" },
+  { icon:"🌅", text:"אדם/אשת בוקר" },
+  { icon:"🪂", text:"קפץ/ה בבנג'י או צניחה חופשית" },
+  { icon:"🌱", text:"מגדל/ת צמחים או ירקות" },
+  { icon:"📖", text:"קרא/ה ספר החודש" },
+  { icon:"⚽", text:"אוהד/ת אותה קבוצת ספורט כמוך" },
+  { icon:"🔮", text:"בעל/ת אותו מזל כמוך" },
+  { icon:"🤹", text:"יודע/ת ללהטט" },
+  { icon:"🎯", text:"יש לו/ה כישרון נסתר" },
+  { icon:"🎬", text:"אוהב/ת אותו ז'אנר סרטים כמוך" },
+  { icon:"🚲", text:"מגיע/ה לבסיס באופניים או ברגל" },
+  { icon:"🎂", text:"יש לו/ה יום הולדת החודש" },
+  { icon:"🎮", text:"משחק/ת משחקי וידאו" },
+  { icon:"🧁", text:"אפה/תה משהו מאפס" },
+  { icon:"🎤", text:"שר/ה בקריוקי בפומבי" }
 ];
 
 /* ---------- tiny seeded RNG so a name always yields the same card ---------- */
@@ -350,7 +359,7 @@ function buildCard(seed, salt){
   let p = 0;
   for(let i=0;i<25;i++){
     if(i===12){ card.push({free:true}); }
-    else { card.push({free:false, text: picks[p++]}); }
+    else { const pk = picks[p++]; card.push({free:false, icon: pk.icon, text: pk.text}); }
   }
   return card;
 }
@@ -374,9 +383,14 @@ function render(){
     if(cell.free){
       div.innerHTML = '<div class="star">🎖️</div><div class="lbl">חופשי</div>';
     } else {
+      const icon = document.createElement('div');
+      icon.className = 'ico';
+      icon.textContent = cell.icon || '🎯';
+      icon.setAttribute('aria-hidden', 'true');
       const prompt = document.createElement('div');
       prompt.className = 'prompt';
       prompt.textContent = 'מישהו ש' + cell.text;
+      div.appendChild(icon);
       const inp = document.createElement('input');
       inp.type = 'text';
       inp.placeholder = 'מי?';
