@@ -181,10 +181,24 @@
 
   canvas.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
+  /* ---- mobile: keep the full 5x5 grid on-screen, no sideways scroll ---- */
   @media (max-width: 560px) {
-    .cell { min-height: 92px; padding: 6px; }
-    .cell .prompt { font-size: 11px; }
-    .board, .head-strip { gap: 5px; }
+    .wrap { padding: 20px 10px 48px; }
+    .cell { min-height: 84px; padding: 5px 4px; gap: 4px; border-radius: 10px; }
+    .cell .prompt { font-size: clamp(9px, 2.6vw, 11px); line-height: 1.18; }
+    .cell input { font-size: 11px; padding: 4px 4px; }
+    .cell.free .star { font-size: 20px; }
+    .cell.free .lbl { font-size: 9px; }
+    .board, .head-strip { gap: 4px; }
+    .panel { padding: 12px; }
+    .btns { flex: 1 1 100%; }
+    .btns button { flex: 1; }
+  }
+  @media (max-width: 380px) {
+    .wrap { padding: 16px 6px 40px; }
+    .cell { min-height: 76px; padding: 4px 3px; }
+    .cell input { font-size: 10px; }
+    .board, .head-strip { gap: 3px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
