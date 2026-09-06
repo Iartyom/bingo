@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>בינגו היכרות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Heebo:wght@400;500;600;700;800&display=swap">
+<style>
+  /* ============================================================
+     בינגו היכרות — Team Bingo Mixer (Hebrew / RTL)
+     ------------------------------------------------------------
+     איך מחליפים משבצות (HOW TO ADD YOUR OWN TOPICS):
+     החליפו את המחרוזות במערך PROMPTS (ב-<script> בתחתית).
+     כל מחרוזת ממשיכה את המשפט "מישהו ש..." — כלומר משבצת אחת.
+     כדאי 24 ומעלה כדי שכל כרטיס יעורבב היטב.
+     ============================================================ */
+
+  :root {
+    /* picked neutrals: soft pastel-green ground with a sage bias */
+    --bg:        #eaf5ea;
+    --surface:   #ffffff;
+    --surface-2: #f1faf1;
+    --ink:       #22342a;
+    --ink-soft:  #5e7367;
+    --line:      #d3e8d3;
+    --accent:    #7ccaa3;   /* pastel green */
+    --accent-ink:#0f3826;   /* deep green text on pastel accent */
+    --teal:      #3fa87a;   /* secondary / "filled" */
+    --gold:      #e7c15a;   /* free space + win contrast */
+    --shadow:    0 1px 2px rgba(34,52,42,.06), 0 8px 24px rgba(34,52,42,.09);
+    --radius:    16px;
+  }
+  /* Single fixed light theme — the pastel-green look stays the same for every
+     viewer regardless of their OS/browser theme (no dark overrides). */
+  :root { color-scheme: light; }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Heebo", system-ui, sans-serif;
+    line-height: 1.5;
+    direction: rtl;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 18px 64px;
+  }
+
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 20px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .12em;
+    color: var(--teal); font-weight: 800; margin: 0 0 6px;
+  }
+  h1 {
+    font-family: "Rubik", sans-serif; font-weight: 700;
+    font-size: clamp(30px, 7vw, 46px); line-height: 1.05;
+    margin: 0; text-wrap: balance;
+    color: var(--ink);
+  }
+  h1 .dot { color: var(--teal); }
+  .tagline { color: var(--ink-soft); margin: 8px auto 0; max-width: 48ch; }
+
+  /* ---------- controls bar ---------- */
+  .panel {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 14px; margin: 18px 0;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  }
+  .field { flex: 1 1 200px; min-width: 0; }
+  .field label {
+    display: block; font-size: 12px; letter-spacing: .04em;
+    font-weight: 800; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%; font: inherit; font-weight: 600;
+    padding: 11px 13px; border-radius: 11px;
+    border: 1.5px solid var(--line); background: var(--surface-2);
+    color: var(--ink);
+  }
+  .field input:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--teal) 40%, transparent);
+    outline-offset: 1px; border-color: var(--teal);
+  }
+  .btns { display: flex; gap: 8px; flex: 0 0 auto; }
+  button {
+    font: inherit; font-weight: 700; cursor: pointer;
+    border-radius: 11px; padding: 11px 16px; border: 1.5px solid var(--line);
+    background: var(--surface-2); color: var(--ink);
+    transition: transform .08s ease, background .15s ease;
+  }
+  button:hover { background: var(--bg); }
+  button:active { transform: translateY(1px); }
+  button.primary {
+    background: var(--accent); color: var(--accent-ink); border-color: transparent;
+  }
+  button.primary:hover { background: color-mix(in srgb, var(--accent) 88%, #000); }
+  button:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--teal) 40%, transparent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- progress ---------- */
+  .status {
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 2px 14px; color: var(--ink-soft); font-weight: 700; font-size: 14px;
+  }
+  .bar { flex: 1; height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--teal));
+    transition: width .3s ease; }
+
+  /* ---------- board ---------- */
+  .board {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+  }
+  .cell {
+    position: relative; background: var(--surface);
+    border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 8px 8px 7px; min-height: 104px;
+    display: flex; flex-direction: column; gap: 6px;
+    box-shadow: var(--shadow);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .cell .prompt {
+    font-size: 12px; line-height: 1.25; font-weight: 700; color: var(--ink);
+    flex: 1; overflow-wrap: anywhere;
+  }
+  .cell input {
+    width: 100%; font: inherit; font-size: 12px; font-weight: 700;
+    padding: 5px 7px; border-radius: 8px; text-align: center;
+    border: 1.5px dashed var(--line); background: var(--surface-2); color: var(--teal);
+  }
+  .cell input::placeholder { color: var(--ink-soft); font-weight: 600; opacity: .7; }
+  .cell input:focus-visible {
+    outline: none; border-style: solid; border-color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 8%, var(--surface));
+  }
+  .cell.filled { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 9%, var(--surface)); }
+  .cell.filled input { border-style: solid; border-color: var(--teal); }
+  .cell.win { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 24%, var(--surface)); }
+  .cell.win .prompt { color: var(--ink); }
+
+  .cell.free {
+    align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--teal) 70%, var(--accent)));
+    border-color: transparent; color: var(--accent-ink);
+  }
+  .cell.free .star { font-family: "Rubik", sans-serif; font-weight: 700; font-size: 24px; line-height: 1; }
+  .cell.free .lbl { font-size: 11px; letter-spacing: .08em; font-weight: 800; }
+
+  /* letter strip בינגו across the top */
+  .head-strip {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 8px;
+  }
+  .head-strip span {
+    font-family: "Rubik", sans-serif; font-weight: 700; font-size: clamp(22px, 5vw, 32px);
+    text-align: center; color: var(--teal);
+  }
+  .head-strip span:nth-child(2){ color: var(--accent); }
+  .head-strip span:nth-child(3){ color: var(--gold); }
+  .head-strip span:nth-child(4){ color: var(--accent); }
+  .head-strip span:nth-child(5){ color: var(--teal); }
+
+  /* ---------- win banner ---------- */
+  .banner {
+    margin: 18px 0 0; text-align: center;
+    background: var(--surface); border: 2px solid var(--gold);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px;
+  }
+  .banner h2 { font-family: "Rubik", sans-serif; margin: 0 0 4px; font-size: 26px; color: var(--teal); }
+  .banner p { margin: 0; color: var(--ink-soft); font-weight: 700; }
+
+  .hint { text-align:center; color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
+
+  canvas.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+
+  @media (max-width: 560px) {
+    .cell { min-height: 92px; padding: 6px; }
+    .cell .prompt { font-size: 11px; }
+    .board, .head-strip { gap: 5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="kicker">בינגו היכרות</p>
+    <h1>מדור אקסון<span class="dot">.</span></h1>
+    <p class="tagline">מצאו חבר/ת צוות שמתאים/ה לכל משבצת ורשמו את השם. השלימו <b>שתי שורות מלאות</b> — לרוחב, לאורך או באלכסון — וזה בינגו.</p>
+  </header>
+
+  <div class="panel">
+    <div class="field">
+      <label for="playerName">השם שלך</label>
+      <input id="playerName" type="text" placeholder="הקלד/י את שמך כדי לקבל כרטיס" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="btns">
+      <button id="newCard" title="ערבוב כרטיס חדש">כרטיס חדש</button>
+      <button id="clearBtn" title="ניקוי השמות שמילאת">ניקוי</button>
+    </div>
+  </div>
+
+  <div class="status">
+    <span id="count">0 / 24 משבצות</span>
+    <span class="bar"><i id="barFill"></i></span>
+  </div>
+
+  <div class="head-strip" aria-hidden="true">
+    <span>ב</span><span>י</span><span>נ</span><span>ג</span><span>ו</span>
+  </div>
+  <div class="board" id="board" aria-label="לוח בינגו"></div>
+
+  <div class="banner" id="banner" hidden>
+    <h2>🎉 בינגו!</h2>
+    <p id="bannerMsg">השלמת שתי שורות. כל הכבוד על העירבוב!</p>
+  </div>
+
+  <p class="hint">טיפ: הכרטיס נשמר במכשיר הזה ומקושר לשמך — אפשר לרענן בכל רגע.</p>
+</div>
+
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+/* ============================================================
+   PROMPTS — משבצות ה"מישהו ש...".
+   >>> החליפו אותן בנושאים שלך. <<<
+   שמרו 24 ומעלה כדי שהכרטיס יעורבב היטב. המרכז תמיד "חופשי".
+   כל טקסט ממשיך את המשפט: "מישהו ש" + הטקסט.
+   ============================================================ */
+const PROMPTS = [
+  "עובד/ת כאן יותר משלוש שנים",
+  "דובר/ת שתי שפות או יותר",
+  "יש לו/ה חיית מחמד בבית",
+  "ביקר/ה ביבשת אחרת",
+  "מנגן/ת בכלי נגינה",
+  "מעדיף/ה תה על פני קפה",
+  "רץ/ה חמישה ק\"מ או יותר",
+  "הבכור/ה במשפחה",
+  "יודע/ת לתכנת ביותר משפת תכנות אחת",
+  "פגש/ה אדם מפורסם",
+  "אוהב/ת אוכל חריף",
+  "גר/ה במדינה אחרת בעבר",
+  "אדם/אשת בוקר",
+  "קפץ/ה בבנג'י או צניחה חופשית",
+  "מגדל/ת צמחים או ירקות",
+  "קרא/ה ספר החודש",
+  "אוהד/ת אותה קבוצת ספורט כמוך",
+  "בעל/ת אותו מזל כמוך",
+  "יודע/ת ללהטט",
+  "יש לו/ה כישרון נסתר",
+  "אוהב/ת אותו ז'אנר סרטים כמוך",
+  "מגיע/ה לעבודה באופניים או ברגל",
+  "יש לו/ה יום הולדת החודש",
+  "משחק/ת משחקי וידאו",
+  "אפה/תה משהו מאפס",
+  "החליף/ה קריירה לפחות פעם אחת",
+  "יודע/ת לסרוג או לתפור",
+  "יש לו/ה קעקוע",
+  "אספן/ית של משהו",
+  "שר/ה בקריוקי בפומבי"
+];
+
+/* ---------- tiny seeded RNG so a name always yields the same card ---------- */
+// mulberry32: deterministic PRNG seeded from the player's name hash.
+function hashStr(s){ let h=1779033703^s.length; for(let i=0;i<s.length;i++){ h=Math.imul(h^s.charCodeAt(i),3432918353); h=h<<13|h>>>19; } return h>>>0; }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function shuffle(arr, rnd){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- state ---------- */
+const board = document.getElementById('board');
+const nameInput = document.getElementById('playerName');
+const banner = document.getElementById('banner');
+const countEl = document.getElementById('count');
+const barFill = document.getElementById('barFill');
+
+let currentCard = [];   // 25 entries; center is {free:true}
+let answers = {};       // index -> name string
+let hasWon = false;
+let currentSalt = 0;
+
+const KEY_PREFIX = 'teamBingo:';
+function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function safeSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function slug(name){ return (name||'').trim().toLowerCase(); }
+
+// Build the 25-cell card from a seed (name) plus an optional reshuffle salt.
+function buildCard(seed, salt){
+  const rnd = mulberry32(hashStr(seed + '|' + (salt||0)));
+  const picks = shuffle(PROMPTS, rnd).slice(0, 24);
+  const card = [];
+  let p = 0;
+  for(let i=0;i<25;i++){
+    if(i===12){ card.push({free:true}); }
+    else { card.push({free:false, text: picks[p++]}); }
+  }
+  return card;
+}
+
+function stateKey(name){ return KEY_PREFIX + slug(name); }
+function loadState(name){
+  const raw = safeGet(stateKey(name));
+  if(!raw) return null;
+  try { return JSON.parse(raw); } catch(e){ return null; }
+}
+function saveState(name){
+  if(!slug(name)) return;
+  safeSet(stateKey(name), JSON.stringify({ salt: currentSalt, answers }));
+}
+
+function render(){
+  board.innerHTML = '';
+  currentCard.forEach((cell, i) => {
+    const div = document.createElement('div');
+    div.className = 'cell' + (cell.free ? ' free' : '');
+    if(cell.free){
+      div.innerHTML = '<div class="star">★</div><div class="lbl">חופשי</div>';
+    } else {
+      const prompt = document.createElement('div');
+      prompt.className = 'prompt';
+      prompt.textContent = 'מישהו ש' + cell.text;
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.placeholder = 'מי?';
+      inp.autocomplete = 'off';
+      inp.spellcheck = false;
+      inp.value = answers[i] || '';
+      inp.setAttribute('aria-label', 'מישהו ש' + cell.text);
+      inp.addEventListener('input', () => {
+        answers[i] = inp.value;
+        div.classList.toggle('filled', inp.value.trim() !== '');
+        saveState(nameInput.value);
+        updateStatus();
+        checkWin();
+      });
+      div.appendChild(prompt);
+      div.appendChild(inp);
+      if((answers[i]||'').trim() !== '') div.classList.add('filled');
+    }
+    board.appendChild(div);
+  });
+  updateStatus();
+  checkWin(true);
+}
+
+function isFilled(i){
+  return currentCard[i].free || (answers[i]||'').trim() !== '';
+}
+
+function updateStatus(){
+  let n = 0;
+  for(let i=0;i<25;i++){ if(i!==12 && (answers[i]||'').trim()!=='') n++; }
+  countEl.textContent = n + ' / 24 משבצות';
+  barFill.style.width = (n/24*100) + '%';
+}
+
+// Winning lines: 5 rows, 5 cols, 2 diagonals.
+function winningLines(){
+  const lines = [];
+  for(let r=0;r<5;r++) lines.push([0,1,2,3,4].map(c=>r*5+c));
+  for(let c=0;c<5;c++) lines.push([0,1,2,3,4].map(r=>r*5+c));
+  lines.push([0,6,12,18,24]);
+  lines.push([4,8,12,16,20]);
+  return lines;
+}
+
+// Win requires TWO complete lines. Completed lines are always highlighted so
+// the player gets feedback after the first, but bingo only fires on the second.
+function checkWin(silent){
+  document.querySelectorAll('.cell.win').forEach(el=>el.classList.remove('win'));
+  const cells = board.children;
+  const completed = winningLines().filter(line => line.every(isFilled));
+  completed.forEach(line => line.forEach(i => cells[i] && cells[i].classList.add('win')));
+  const won = completed.length >= 2;
+  banner.hidden = !won;
+  if(won && !hasWon && !silent){ celebrate(); }
+  hasWon = won;
+}
+
+/* ---------- lightweight canvas confetti (no library) ---------- */
+function celebrate(){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = document.getElementById('confetti');
+  cv.hidden = false;
+  const ctx = cv.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; ctx.scale(dpr,dpr);
+  const colors = ['#7ccaa3','#3fa87a','#e7c15a','#8fd9b3','#5fcea0'];
+  const bits = Array.from({length:140}, () => ({
+    x: Math.random()*innerWidth, y: -20 - Math.random()*innerHeight*0.4,
+    r: 4+Math.random()*6, c: colors[(Math.random()*colors.length)|0],
+    vx: -2+Math.random()*4, vy: 2+Math.random()*4, rot: Math.random()*6.28, vr: -0.2+Math.random()*0.4
+  }));
+  const start = performance.now();
+  (function frame(t){
+    const elapsed = t - start;
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    bits.forEach(b=>{
+      b.x+=b.vx; b.y+=b.vy; b.vy+=0.04; b.rot+=b.vr;
+      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.rot);
+      ctx.fillStyle=b.c; ctx.fillRect(-b.r/2,-b.r/2,b.r,b.r*0.6); ctx.restore();
+    });
+    if(elapsed < 3200){ requestAnimationFrame(frame); }
+    else { ctx.clearRect(0,0,innerWidth,innerHeight); cv.hidden = true; }
+  })(start);
+}
+
+/* ---------- name handling ---------- */
+function activate(name){
+  const saved = loadState(name);
+  currentSalt = saved ? (saved.salt||0) : 0;
+  answers = saved ? (saved.answers||{}) : {};
+  currentCard = buildCard(slug(name) || 'guest', currentSalt);
+  hasWon = false;
+  render();
+}
+
+let debounce;
+nameInput.addEventListener('input', () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(() => {
+    safeSet(KEY_PREFIX+'lastName', nameInput.value);
+    activate(nameInput.value);
+  }, 350);
+});
+
+document.getElementById('newCard').addEventListener('click', () => {
+  currentSalt = (currentSalt + 1) % 100000;
+  answers = {};
+  currentCard = buildCard(slug(nameInput.value) || 'guest', currentSalt);
+  hasWon = false;
+  saveState(nameInput.value);
+  render();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  answers = {};
+  saveState(nameInput.value);
+  render();
+});
+
+/* ---------- init ---------- */
+document.documentElement.setAttribute('dir','rtl');
+document.documentElement.setAttribute('lang','he');
+const lastName = safeGet(KEY_PREFIX+'lastName');
+if(lastName){ nameInput.value = lastName; }
+activate(nameInput.value || 'guest');
+
+window.addEventListener('resize', () => {
+  const cv = document.getElementById('confetti');
+  if(!cv.hidden){ cv.width = innerWidth; cv.height = innerHeight; }
+});
+</script>
+</body>
+</html>
