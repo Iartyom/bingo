@@ -399,9 +399,9 @@ function render(){
       div.innerHTML='<div class="star">🎖️</div><div class="lbl">חופשי</div>';
     } else {
       const icon=document.createElement('div'); icon.className='ico'; icon.textContent=cell.icon||'🎯'; icon.setAttribute('aria-hidden','true');
-      const prompt=document.createElement('div'); prompt.className='prompt'; prompt.textContent='מישהו ש'+cell.text;
+      const prompt=document.createElement('div'); prompt.className='prompt'; prompt.textContent=cell.text;
       const inp=document.createElement('input'); inp.type='text'; inp.placeholder='מי?'; inp.autocomplete='off'; inp.spellcheck=false;
-      inp.value=answers[i]||''; inp.setAttribute('aria-label','מישהו ש'+cell.text);
+      inp.value=answers[i]||''; inp.setAttribute('aria-label',cell.text);
       inp.addEventListener('input',()=>{ answers[i]=inp.value; div.classList.toggle('filled', inp.value.trim()!==''); saveState(nameInput.value); updateStatus(); checkWin(); });
       div.appendChild(icon); div.appendChild(prompt); div.appendChild(inp);
       if((answers[i]||'').trim()!=='') div.classList.add('filled');
