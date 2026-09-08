@@ -57,6 +57,7 @@
     -webkit-font-smoothing: antialiased;
   }
   .wrap {
+    position: relative; z-index: 1;
     max-width: 760px;
     margin: 0 auto;
     padding: 28px 18px 64px;
@@ -235,28 +236,52 @@
 
   /* ---------- Rosh Hashana festive decor ---------- */
   .festive { text-align: center; }
-  .festive.top { margin-bottom: 6px; }
-  .festive.bottom { margin-top: 26px; }
+  .festive.bottom { margin-top: 22px; }
+
+  /* hanging garland: a draped gold string (SVG) with ornaments swinging from it */
+  .swag { position: relative; width: 100%; height: 66px; }
+  .swag svg { position: absolute; inset: 0 0 auto 0; width: 100%; height: 32px; overflow: visible; }
+  .swag .orn { position: absolute; transform: translateX(-50%); }
+  .swag .drop {
+    display: flex; flex-direction: column; align-items: center; line-height: 1;
+    font-size: clamp(21px, 6vw, 28px); transform-origin: top center;
+    animation: swing 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 2px rgba(36,44,24,.18));
+  }
+  .swag .drop::before {   /* the little thread each ornament hangs on */
+    content: ""; width: 2px; height: 9px; margin-bottom: 1px;
+    background: var(--gold); border-radius: 2px;
+  }
+  .swag .orn:nth-child(3) .drop { animation-delay: .4s; animation-duration: 3.4s; }
+  .swag .orn:nth-child(4) .drop { animation-delay: .8s; animation-duration: 2.6s; }
+  .swag .orn:nth-child(5) .drop { animation-delay: .2s; animation-duration: 3.2s; }
+  .swag .orn:nth-child(6) .drop { animation-delay: .6s; animation-duration: 2.9s; }
+  @keyframes swing {
+    0%,100% { transform: rotate(-9deg); }
+    50%     { transform: rotate(9deg); }
+  }
+
+  /* greeting shaped like a ribbon banner with pointed ends */
   .greet {
     display: inline-block; font-family: "Secular One", "Rubik", sans-serif;
-    font-size: clamp(15px, 4vw, 20px); color: #5a3d0f;
-    background: linear-gradient(180deg, #f6d67a, var(--gold));
-    padding: 7px 20px; border-radius: 999px;
-    box-shadow: var(--shadow); border: 2px solid #fff3cf;
+    font-size: clamp(15px, 4vw, 21px); color: #5a3d0f;
+    background: linear-gradient(180deg, #f7dc86, var(--gold));
+    padding: 8px 30px; margin-top: 2px;
+    border-top: 1.5px solid #fff3cf; border-bottom: 1.5px solid #b9860f;
+    box-shadow: var(--shadow);
+    clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
   }
-  .garland {
-    display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(6px, 3vw, 16px);
-    font-size: clamp(20px, 6vw, 30px); line-height: 1; margin: 10px 0 2px;
+  .festive.bottom .blessing { color: var(--ink-soft); font-weight: 700; font-size: 13px; margin: 10px 0 0; }
+  .swag path { fill: none; stroke: var(--gold); }
+  .swag circle { fill: var(--gold); }
+  @media (prefers-reduced-motion: reduce) { .swag .drop { animation: none; } }
+
+  /* faint unit emblem watermark behind everything */
+  .emblem {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
   }
-  .garland span { display: inline-block; animation: bob 2.6s ease-in-out infinite; transform-origin: center; }
-  .garland span:nth-child(2n) { animation-delay: .35s; animation-duration: 3s; }
-  .garland span:nth-child(3n) { animation-delay: .7s; animation-duration: 2.3s; }
-  @keyframes bob {
-    0%,100% { transform: translateY(0) rotate(-4deg); }
-    50%     { transform: translateY(-7px) rotate(4deg); }
-  }
-  .festive.bottom .blessing { color: var(--ink-soft); font-weight: 700; font-size: 13px; margin: 6px 0 0; }
-  @media (prefers-reduced-motion: reduce) { .garland span { animation: none; } }
+  .emblem svg { width: min(74vw, 480px); height: auto; color: var(--accent); opacity: .06; }
 
   .hint { text-align:center; color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
 
@@ -292,10 +317,18 @@
 
 <div class="wrap">
   <div class="festive top">
-    <span class="greet">🍎 שנה טובה ומתוקה 🍯</span>
-    <div class="garland" aria-hidden="true">
-      <span>🍎</span><span>🍯</span><span>🍏</span><span>🐝</span><span>🥯</span><span>🍇</span><span>🍎</span>
+    <div class="swag" aria-hidden="true">
+      <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+        <path d="M0,5 Q50,30 100,5" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <circle cx="0" cy="5" r="2.4"/><circle cx="100" cy="5" r="2.4"/>
+      </svg>
+      <span class="orn" style="left:12%;top:11px"><span class="drop">🍎</span></span>
+      <span class="orn" style="left:31%;top:16.5px"><span class="drop">🍯</span></span>
+      <span class="orn" style="left:50%;top:18.5px"><span class="drop">🍏</span></span>
+      <span class="orn" style="left:69%;top:16.5px"><span class="drop">🥯</span></span>
+      <span class="orn" style="left:88%;top:11px"><span class="drop">🍇</span></span>
     </div>
+    <span class="greet">🍎 שנה טובה ומתוקה 🍯</span>
   </div>
 
   <header>
@@ -343,12 +376,34 @@
   <p class="hint">טיפ: הכרטיס נשמר במכשיר הזה ומקושר לשמך — אפשר לרענן בכל רגע.</p>
 
   <div class="festive bottom">
-    <div class="garland" aria-hidden="true">
-      <span>🍇</span><span>🥯</span><span>🐝</span><span>🍯</span><span>🍏</span><span>🍎</span>
+    <div class="swag" aria-hidden="true">
+      <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+        <path d="M0,5 Q50,30 100,5" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <circle cx="0" cy="5" r="2.4"/><circle cx="100" cy="5" r="2.4"/>
+      </svg>
+      <span class="orn" style="left:12%;top:11px"><span class="drop">🍇</span></span>
+      <span class="orn" style="left:31%;top:16.5px"><span class="drop">🥯</span></span>
+      <span class="orn" style="left:50%;top:18.5px"><span class="drop">🐝</span></span>
+      <span class="orn" style="left:69%;top:16.5px"><span class="drop">🍯</span></span>
+      <span class="orn" style="left:88%;top:11px"><span class="drop">🍎</span></span>
     </div>
     <span class="greet">🍏 מדור אקסון מאחל שנה טובה 🍎</span>
     <p class="blessing">שתהיה שנה מתוקה, בריאה ומלאה בהצלחות 🍯</p>
   </div>
+</div>
+
+<div class="emblem" aria-hidden="true">
+  <svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+    <!-- tactical shield crest for מדור אקסון: star (excellence), rank chevrons, circuit nodes (tech) -->
+    <path d="M60 6 L114 26 V72 C114 106 90 128 60 140 C30 128 6 106 6 72 V26 Z" stroke-width="4"/>
+    <path d="M60,36 L65.9,51.9 L82.8,52.6 L69.5,63.1 L74.1,79.4 L60,70 L45.9,79.4 L50.5,63.1 L37.2,52.6 L54.1,51.9 Z"/>
+    <path d="M42 94 L60 104 L78 94"/>
+    <path d="M42 106 L60 116 L78 106"/>
+    <circle cx="28" cy="30" r="3.2" fill="currentColor" stroke="none"/>
+    <path d="M28 30 L42 44"/>
+    <circle cx="92" cy="30" r="3.2" fill="currentColor" stroke="none"/>
+    <path d="M92 30 L78 44"/>
+  </svg>
 </div>
 
 <canvas class="confetti" id="confetti" hidden></canvas>
