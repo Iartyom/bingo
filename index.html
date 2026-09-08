@@ -422,21 +422,38 @@ function checkWin(silent){
   if(won && !hasWon && !silent){ celebrate(); }
   hasWon=won;
 }
+// Full-screen celebration: two center bursts + a steady rain from the top,
+// lots of pieces, ~5.5s, so a win clearly fills the whole screen.
 function celebrate(){
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const cv=document.getElementById('confetti'); cv.hidden=false;
   const ctx=cv.getContext('2d'); const dpr=Math.min(window.devicePixelRatio||1,2);
-  cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; ctx.scale(dpr,dpr);
-  const colors=['#c1901f','#3a4d2b','#e6bd54','#a83a2c','#4f6438','#f3d888'];
-  const bits=Array.from({length:150},()=>({ x:Math.random()*innerWidth, y:-20-Math.random()*innerHeight*0.4,
-    r:4+Math.random()*6, c:colors[(Math.random()*colors.length)|0], vx:-2+Math.random()*4, vy:2+Math.random()*4,
-    rot:Math.random()*6.28, vr:-0.2+Math.random()*0.4 }));
-  const start=performance.now();
+  function fit(){ cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  fit();
+  const colors=['#c1901f','#3a4d2b','#e6bd54','#a83a2c','#4f6438','#f3d888','#d0433a','#6a9a3c'];
+  const bits=[];
+  const mk=(x,y,vx,vy,shape)=>({ x,y,vx,vy, r:5+Math.random()*7, c:colors[(Math.random()*colors.length)|0],
+    rot:Math.random()*6.28, vr:-0.28+Math.random()*0.56, shape });
+  // burst outward from a point
+  function burst(cx,cy,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.283, s=4+Math.random()*11;
+    bits.push(mk(cx,cy,Math.cos(a)*s, Math.sin(a)*s-3, Math.random()<.5?'rect':'circ')); } }
+  burst(innerWidth*0.5, innerHeight*0.42, 160);
+  setTimeout(()=>{ burst(innerWidth*0.25, innerHeight*0.4, 90); burst(innerWidth*0.75, innerHeight*0.4, 90); }, 250);
+  // steady rain from the top
+  let rain=true; setTimeout(()=>rain=false, 2600);
+  const start=performance.now(); let last=start;
+  window.addEventListener('resize', fit);
   (function frame(t){
     const el=t-start; ctx.clearRect(0,0,innerWidth,innerHeight);
-    bits.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; b.vy+=0.04; b.rot+=b.vr;
-      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.rot); ctx.fillStyle=b.c; ctx.fillRect(-b.r/2,-b.r/2,b.r,b.r*0.6); ctx.restore(); });
-    if(el<3200){ requestAnimationFrame(frame); } else { ctx.clearRect(0,0,innerWidth,innerHeight); cv.hidden=true; }
+    if(rain && t-last>40){ last=t; for(let i=0;i<7;i++){ bits.push(mk(Math.random()*innerWidth,-15,-1.5+Math.random()*3,2.5+Math.random()*3.5,Math.random()<.5?'rect':'circ')); } }
+    bits.forEach(b=>{ b.vy+=0.14; b.x+=b.vx; b.y+=b.vy; b.vx*=0.99; b.rot+=b.vr;
+      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.rot); ctx.fillStyle=b.c;
+      if(b.shape==='circ'){ ctx.beginPath(); ctx.arc(0,0,b.r*0.5,0,6.283); ctx.fill(); }
+      else { ctx.fillRect(-b.r/2,-b.r/2,b.r,b.r*0.62); }
+      ctx.restore(); });
+    for(let i=bits.length-1;i>=0;i--){ if(bits[i].y>innerHeight+30) bits.splice(i,1); }
+    if(el<5500){ requestAnimationFrame(frame); }
+    else { ctx.clearRect(0,0,innerWidth,innerHeight); cv.hidden=true; window.removeEventListener('resize',fit); }
   })(start);
 }
 function activate(name){
