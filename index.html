@@ -244,18 +244,19 @@
   .swag .orn { position: absolute; transform: translateX(-50%); }
   .swag .drop {
     display: flex; flex-direction: column; align-items: center; line-height: 1;
-    font-size: clamp(21px, 6vw, 28px); transform-origin: top center;
+    transform-origin: top center;
     animation: swing 3s ease-in-out infinite;
-    filter: drop-shadow(0 2px 2px rgba(36,44,24,.18));
+    filter: drop-shadow(0 2px 2px rgba(36,44,24,.2));
   }
+  .swag .drop svg { width: clamp(28px, 7.5vw, 36px); height: auto; display: block; }
   .swag .drop::before {   /* the little thread each ornament hangs on */
     content: ""; width: 2px; height: 9px; margin-bottom: 1px;
     background: var(--gold); border-radius: 2px;
   }
-  .swag .orn:nth-child(3) .drop { animation-delay: .4s; animation-duration: 3.4s; }
-  .swag .orn:nth-child(4) .drop { animation-delay: .8s; animation-duration: 2.6s; }
-  .swag .orn:nth-child(5) .drop { animation-delay: .2s; animation-duration: 3.2s; }
-  .swag .orn:nth-child(6) .drop { animation-delay: .6s; animation-duration: 2.9s; }
+  .swag .orn:nth-child(2) .drop { animation-delay: .1s; animation-duration: 3.1s; }
+  .swag .orn:nth-child(3) .drop { animation-delay: .5s; animation-duration: 3.4s; }
+  .swag .orn:nth-child(4) .drop { animation-delay: .9s; animation-duration: 2.6s; }
+  .swag .orn:nth-child(5) .drop { animation-delay: .3s; animation-duration: 3.2s; }
   @keyframes swing {
     0%,100% { transform: rotate(-9deg); }
     50%     { transform: rotate(9deg); }
@@ -318,17 +319,12 @@
 <div class="wrap">
   <div class="festive top">
     <div class="swag" aria-hidden="true">
-      <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+      <svg class="string" viewBox="0 0 100 32" preserveAspectRatio="none">
         <path d="M0,5 Q50,30 100,5" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
         <circle cx="0" cy="5" r="2.4"/><circle cx="100" cy="5" r="2.4"/>
       </svg>
-      <span class="orn" style="left:12%;top:11px"><span class="drop">🍎</span></span>
-      <span class="orn" style="left:31%;top:16.5px"><span class="drop">🍯</span></span>
-      <span class="orn" style="left:50%;top:18.5px"><span class="drop">🍏</span></span>
-      <span class="orn" style="left:69%;top:16.5px"><span class="drop">🥯</span></span>
-      <span class="orn" style="left:88%;top:11px"><span class="drop">🍇</span></span>
     </div>
-    <span class="greet">🍎 שנה טובה ומתוקה 🍯</span>
+    <span class="greet">שנה טובה</span>
   </div>
 
   <header>
@@ -377,18 +373,13 @@
 
   <div class="festive bottom">
     <div class="swag" aria-hidden="true">
-      <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+      <svg class="string" viewBox="0 0 100 32" preserveAspectRatio="none">
         <path d="M0,5 Q50,30 100,5" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
         <circle cx="0" cy="5" r="2.4"/><circle cx="100" cy="5" r="2.4"/>
       </svg>
-      <span class="orn" style="left:12%;top:11px"><span class="drop">🍇</span></span>
-      <span class="orn" style="left:31%;top:16.5px"><span class="drop">🥯</span></span>
-      <span class="orn" style="left:50%;top:18.5px"><span class="drop">🐝</span></span>
-      <span class="orn" style="left:69%;top:16.5px"><span class="drop">🍯</span></span>
-      <span class="orn" style="left:88%;top:11px"><span class="drop">🍎</span></span>
     </div>
-    <span class="greet">🍏 מדור אקסון מאחל שנה טובה 🍎</span>
-    <p class="blessing">שתהיה שנה מתוקה, בריאה ומלאה בהצלחות 🍯</p>
+    <span class="greet">מדור אקסון מאחל שנה טובה</span>
+    <p class="blessing">שתהיה שנה מתוקה, בריאה ומלאה בהצלחות</p>
   </div>
 </div>
 
@@ -647,6 +638,39 @@ activate(nameInput.value || 'guest');
 // Put the cursor on the name field on load (so the keyboard opens) — only when
 // empty, so returning players aren't interrupted or scrolled away.
 if(!nameInput.value){ setTimeout(() => nameInput.focus(), 100); }
+
+/* ---------- Rosh Hashana garland: hand-drawn SVG ornaments ---------- */
+// Four Rosh Hashana symbols drawn as small inline SVGs (crisper + cuter than
+// emoji, and consistent across devices): pomegranate, apple-in-honey, honey
+// dipper, bee. Injected into every .swag and hung along the draped string.
+const ROSH_ICONS = {
+  pomegranate: `<svg viewBox="0 0 32 32"><circle cx="16" cy="19" r="10.5" fill="#b8322a"/><path d="M12 15.5a4 10 0 0 0 8 0" fill="none" stroke="#8f221c" stroke-width="1"/><circle cx="12.4" cy="16.5" r="1.3" fill="#f3b3ab"/><circle cx="19.4" cy="17.2" r="1.3" fill="#f3b3ab"/><circle cx="15.7" cy="21.4" r="1.3" fill="#f3b3ab"/><path d="M16 9V4" stroke="#7c8b3a" stroke-width="2" stroke-linecap="round"/><path d="M16 5.5l3.4-2.6-.7 3.7zM16 5.5l-3.4-2.6.7 3.7z" fill="#7c8b3a"/></svg>`,
+  appleHoney: `<svg viewBox="0 0 32 32"><path d="M5 23q11 4.5 22 0v2.6q-11 4.5-22 0z" fill="#e0a12f"/><path d="M16 8c-5 0-7.6 4-7.6 8.4 0 3.6 2.9 6.8 7.6 6.8s7.6-3.2 7.6-6.8C23.6 12 21 8 16 8z" fill="#d0433a"/><path d="M16 8c0-2.6 1.5-4.2 3.6-4.8" fill="none" stroke="#6b4a2b" stroke-width="1.6" stroke-linecap="round"/><path d="M17 6.2c2-1.6 4.2-1.1 5.2 0-1 1.7-3.2 2-5.2 0z" fill="#6a9a3c"/><path d="M11 24.4q0 3-1.6 4.8" fill="none" stroke="#e0a12f" stroke-width="2" stroke-linecap="round"/></svg>`,
+  honey: `<svg viewBox="0 0 32 32"><path d="M16 3.5v12.5" stroke="#8a5a1e" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="3.6" r="2.2" fill="#8a5a1e"/><g fill="none" stroke="#e0a12f" stroke-width="3.1" stroke-linecap="round"><path d="M11 17.5h10"/><path d="M11 21.5h10"/><path d="M12.5 25.5h7"/></g><path d="M16 28q-1.6 2.1 0 3.4 1.6-1.3 0-3.4z" fill="#e0a12f"/></svg>`,
+  bee: `<svg viewBox="0 0 32 32"><g stroke="#b3d0df" stroke-width=".8"><ellipse cx="16" cy="9" rx="5" ry="3.3" fill="#eaf5fb" transform="rotate(-18 16 9)"/><ellipse cx="22" cy="9" rx="5" ry="3.3" fill="#eaf5fb" transform="rotate(18 22 9)"/></g><ellipse cx="17" cy="18.5" rx="9.5" ry="7" fill="#f2c94c"/><path d="M15.5 12.5q2.6 6 .6 12.2" fill="none" stroke="#3a2f18" stroke-width="2.6"/><path d="M20.5 11.8q3 6.6 1 13.5" fill="none" stroke="#3a2f18" stroke-width="2.6"/><circle cx="8.5" cy="18.5" r="3" fill="#2c2413"/><circle cx="8" cy="17.6" r=".9" fill="#fff"/></svg>`
+};
+(function buildGarlands(){
+  // ornaments sit on the drape at these x% / top(px) points (follow the curve)
+  const spots = [
+    { x:16, top:11.7, icon:'pomegranate' },
+    { x:38, top:16.8, icon:'appleHoney' },
+    { x:62, top:16.8, icon:'honey' },
+    { x:84, top:11.7, icon:'bee' }
+  ];
+  document.querySelectorAll('.swag').forEach(sw => {
+    spots.forEach(s => {
+      const orn = document.createElement('span');
+      orn.className = 'orn';
+      orn.style.left = s.x + '%';
+      orn.style.top = s.top + 'px';
+      const drop = document.createElement('span');
+      drop.className = 'drop';
+      drop.innerHTML = ROSH_ICONS[s.icon];
+      orn.appendChild(drop);
+      sw.appendChild(orn);
+    });
+  });
+})();
 
 window.addEventListener('resize', () => {
   const cv = document.getElementById('confetti');
