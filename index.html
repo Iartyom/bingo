@@ -277,7 +277,7 @@
   </div>
 
   <div class="status">
-    <span id="count">0 / 24 משבצות</span>
+    <span id="count">0 / 25 משבצות</span>
     <span class="bar"><i id="barFill"></i></span>
   </div>
 
@@ -370,12 +370,9 @@ function slug(name){ return (name||'').trim().toLowerCase(); }
 
 function buildCard(seed, salt){
   const rnd=mulberry32(hashStr(seed+'|'+(salt||0)));
-  const picks=shuffle(PROMPTS, rnd).slice(0,24);
-  const card=[]; let p=0;
-  for(let i=0;i<25;i++){
-    if(i===12){ card.push({free:true}); }
-    else { const pk=picks[p++]; card.push({free:false, icon:pk.icon, text:pk.text}); }
-  }
+  const picks=shuffle(PROMPTS, rnd).slice(0,25); // all 25 cells are questions now (no free space)
+  const card=[];
+  for(let i=0;i<25;i++){ const pk=picks[i]; card.push({free:false, icon:pk.icon, text:pk.text}); }
   return card;
 }
 function stateKey(name){ return KEY_PREFIX+slug(name); }
@@ -402,10 +399,10 @@ function render(){
   });
   updateStatus(); checkWin(true);
 }
-function isFilled(i){ return currentCard[i].free || (answers[i]||'').trim()!==''; }
+function isFilled(i){ return (answers[i]||'').trim()!==''; }
 function updateStatus(){
-  let n=0; for(let i=0;i<25;i++){ if(i!==12 && (answers[i]||'').trim()!=='') n++; }
-  countEl.textContent=n+' / 24 משבצות'; barFill.style.width=(n/24*100)+'%';
+  let n=0; for(let i=0;i<25;i++){ if((answers[i]||'').trim()!=='') n++; }
+  countEl.textContent=n+' / 25 משבצות'; barFill.style.width=(n/25*100)+'%';
 }
 function winningLines(){
   const lines=[];
