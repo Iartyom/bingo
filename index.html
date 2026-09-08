@@ -317,7 +317,7 @@
   <div class="panel">
     <div class="field">
       <label for="playerName">שם הלוחם/ת</label>
-      <input id="playerName" type="text" placeholder="הקלד/י שם כדי לקבל כרטיס משימה" autocomplete="off" spellcheck="false">
+      <input id="playerName" type="text" placeholder="הקלד/י שם כדי לקבל כרטיס משימה" autocomplete="off" spellcheck="false" autofocus>
     </div>
     <div class="btns">
       <button id="newCard" title="ערבוב כרטיס חדש">כרטיס חדש</button>
@@ -589,6 +589,9 @@ document.documentElement.setAttribute('lang','he');
 const lastName = safeGet(KEY_PREFIX+'lastName');
 if(lastName){ nameInput.value = lastName; }
 activate(nameInput.value || 'guest');
+// Put the cursor on the name field on load (so the keyboard opens) — only when
+// empty, so returning players aren't interrupted or scrolled away.
+if(!nameInput.value){ setTimeout(() => nameInput.focus(), 100); }
 
 window.addEventListener('resize', () => {
   const cv = document.getElementById('confetti');
