@@ -214,6 +214,25 @@
   .banner h2 { font-family: "Secular One", "Rubik", sans-serif; margin: 6px 0 4px; font-size: 30px; color: var(--teal); }
   .banner p { margin: 0; color: var(--ink-soft); font-weight: 700; }
 
+  /* ---------- rules "briefing" card ---------- */
+  .rules {
+    background: var(--surface); border: 1px solid var(--line);
+    border-right: 5px solid var(--gold);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 14px 16px; margin: 18px 0 0;
+  }
+  .rules h3 {
+    display: flex; align-items: center; gap: 8px;
+    font-family: "Secular One", "Rubik", sans-serif; font-weight: 400;
+    font-size: 19px; margin: 0 0 8px; color: var(--teal);
+  }
+  .rules ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .rules li {
+    display: flex; gap: 9px; align-items: flex-start;
+    font-weight: 700; color: var(--ink); font-size: 14.5px;
+  }
+  .rules li span { flex: 0 0 auto; color: var(--accent); }
+
   .hint { text-align:center; color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
 
   canvas.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
@@ -253,6 +272,15 @@
     <div class="divider" aria-hidden="true"><span class="medal">★</span></div>
     <p class="tagline">מצאו חבר/ת צוות שמתאים/ה לכל משבצת ורשמו את השם. השלימו <b>שתי שורות מלאות</b> — לרוחב, לאורך או באלכסון — והמשימה הושלמה.</p>
   </header>
+
+  <div class="rules">
+    <h3>📋 חוקים</h3>
+    <ul>
+      <li><span>▸</span>אותו השם יכול להופיע לכל היותר פעמיים!</li>
+      <li><span>▸</span>אסור לכתוב את השם של עצמך</li>
+      <li><span>▸</span>כל תשובה נדרש לפרט בעל פה</li>
+    </ul>
+  </div>
 
   <div class="panel">
     <div class="field">
