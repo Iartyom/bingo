@@ -233,6 +233,31 @@
   }
   .rules li span { flex: 0 0 auto; color: var(--accent); }
 
+  /* ---------- Rosh Hashana festive decor ---------- */
+  .festive { text-align: center; }
+  .festive.top { margin-bottom: 6px; }
+  .festive.bottom { margin-top: 26px; }
+  .greet {
+    display: inline-block; font-family: "Secular One", "Rubik", sans-serif;
+    font-size: clamp(15px, 4vw, 20px); color: #5a3d0f;
+    background: linear-gradient(180deg, #f6d67a, var(--gold));
+    padding: 7px 20px; border-radius: 999px;
+    box-shadow: var(--shadow); border: 2px solid #fff3cf;
+  }
+  .garland {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(6px, 3vw, 16px);
+    font-size: clamp(20px, 6vw, 30px); line-height: 1; margin: 10px 0 2px;
+  }
+  .garland span { display: inline-block; animation: bob 2.6s ease-in-out infinite; transform-origin: center; }
+  .garland span:nth-child(2n) { animation-delay: .35s; animation-duration: 3s; }
+  .garland span:nth-child(3n) { animation-delay: .7s; animation-duration: 2.3s; }
+  @keyframes bob {
+    0%,100% { transform: translateY(0) rotate(-4deg); }
+    50%     { transform: translateY(-7px) rotate(4deg); }
+  }
+  .festive.bottom .blessing { color: var(--ink-soft); font-weight: 700; font-size: 13px; margin: 6px 0 0; }
+  @media (prefers-reduced-motion: reduce) { .garland span { animation: none; } }
+
   .hint { text-align:center; color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
 
   canvas.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
@@ -266,6 +291,13 @@
 <body>
 
 <div class="wrap">
+  <div class="festive top">
+    <span class="greet">🍎 שנה טובה ומתוקה 🍯</span>
+    <div class="garland" aria-hidden="true">
+      <span>🍎</span><span>🍯</span><span>🍏</span><span>🐝</span><span>🥯</span><span>🍇</span><span>🍎</span>
+    </div>
+  </div>
+
   <header>
     <p class="kicker"><span class="chev">►►</span> בינגו היכרות</p>
     <h1>מדור אקסון<span class="dot">.</span></h1>
@@ -309,6 +341,14 @@
   </div>
 
   <p class="hint">טיפ: הכרטיס נשמר במכשיר הזה ומקושר לשמך — אפשר לרענן בכל רגע.</p>
+
+  <div class="festive bottom">
+    <div class="garland" aria-hidden="true">
+      <span>🍇</span><span>🥯</span><span>🐝</span><span>🍯</span><span>🍏</span><span>🍎</span>
+    </div>
+    <span class="greet">🍏 מדור אקסון מאחל שנה טובה 🍎</span>
+    <p class="blessing">שתהיה שנה מתוקה, בריאה ומלאה בהצלחות 🍯</p>
+  </div>
 </div>
 
 <canvas class="confetti" id="confetti" hidden></canvas>
