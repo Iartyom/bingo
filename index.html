@@ -232,6 +232,13 @@
     .board,.head-strip{ gap:4px; }
   }
   @media (prefers-reduced-motion:reduce){ *{ transition:none!important; } .swag .drop{ animation:none; } }
+
+  /* confetti overlay must be a fixed, full-viewport layer — without this the
+     canvas renders at its raw pixel size and blows up the page (esp. mobile) */
+  canvas.confetti{
+    position:fixed; top:0; left:0; width:100vw; height:100vh;
+    pointer-events:none; z-index:80;
+  }
 </style>
 </head>
 <body>
@@ -489,7 +496,7 @@ const lastName=safeGet(KEY_PREFIX+'lastName');
 if(lastName){ nameInput.value=lastName; }
 activate(nameInput.value||'guest');
 if(!nameInput.value){ setTimeout(()=>nameInput.focus(),100); }
-window.addEventListener('resize',()=>{ const cv=document.getElementById('confetti'); if(!cv.hidden){ cv.width=innerWidth; cv.height=innerHeight; } });
+// (confetti handles its own resize while active — see celebrate())
 </script>
 </body>
 </html>
